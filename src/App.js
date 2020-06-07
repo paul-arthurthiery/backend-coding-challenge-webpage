@@ -3,6 +3,7 @@ import { Client as Styletron } from 'styletron-engine-atomic';
 import { Provider as StyletronProvider } from 'styletron-react';
 import { BaseProvider } from 'baseui';
 
+import Home from './components/Home';
 import theme from './theme';
 import './styles.css';
 
