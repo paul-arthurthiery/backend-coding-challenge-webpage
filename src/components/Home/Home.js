@@ -1,11 +1,29 @@
 import React, { useRef, useState } from 'react';
 import { Select, TYPE } from 'baseui/select';
 import { useStyletron } from 'baseui';
+import { getSuggestions } from './HomeController';
+
+const formatSuggestions = (suggestions) => suggestions.map((suggestion) => ({
+  label: suggestion.name,
+  id: suggestion.name,
+}));
+
 export default () => {
   const [value, setValue] = useState([]);
   const [suggestions, setSuggestions] = useState([]);
   const [loading, setLoading] = useState(true);
   const inputRef = useRef(null);
+  const onChange = (input) => {
+    if (!input) {
+      return setSuggestions([]);
+    }
+    setLoading(true);
+    return getSuggestions(input).then((newSuggestions) => {
+      const formattedNewSuggestions = formatSuggestions(newSuggestions);
+      setSuggestions(formattedNewSuggestions);
+      setLoading(false);
+    });
+  };
   const [css, theme] = useStyletron();
   const homeClass = css({
     margin: 'auto',
@@ -38,6 +56,7 @@ export default () => {
           loading={loading}
           type={TYPE.search}
           onChange={(params) => setValue(params.value)}
+          onInputChange={(e) => onChange(e.target.value)}
           placeholder="I'm looking for ..."
           inputRef={inputRef}
           overrides={{
