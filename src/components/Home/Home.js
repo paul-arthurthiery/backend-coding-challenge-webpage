@@ -108,6 +108,7 @@ export default () => {
           options={suggestions}
           isLoading={loading}
           type={TYPE.search}
+          clearable={false}
           onChange={(params) => setFragment(params.value)}
           onInputChange={(e) => onChange(e.target.value)}
           placeholder="I'm looking for ..."
