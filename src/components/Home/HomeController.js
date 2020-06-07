@@ -1,6 +1,8 @@
 import axios from 'axios';
 import debounce from 'lodash.debounce';
 
+const CHUNK_SIZE = 15;
+
 const getSuggestions = debounce((fragment, latitude, longitude) => {
   const query = {
     q: `${fragment[0].toUpperCase()}${fragment.substring(1, fragment.length)}`,
@@ -19,11 +21,10 @@ const getSuggestions = debounce((fragment, latitude, longitude) => {
       if (status !== 200) {
         throw new Error('Server error');
       }
-      console.log(data.suggestions);
-      return data.suggestions;
+      return data.suggestions.slice(0, CHUNK_SIZE + 1);
     })
     .catch(() => []);
 },
-1000, { leading: true });
+200, { leading: true });
 
 export { getSuggestions };

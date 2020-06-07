@@ -1,6 +1,12 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { Select, TYPE } from 'baseui/select';
+import {
+  Checkbox,
+  STYLE_TYPE,
+  LABEL_PLACEMENT,
+} from 'baseui/checkbox';
 import { useStyletron } from 'baseui';
+import { Slider } from 'baseui/slider';
 import { getSuggestions } from './HomeController';
 
 const formatSuggestions = (suggestions) => suggestions.map((suggestion) => ({
@@ -9,20 +15,29 @@ const formatSuggestions = (suggestions) => suggestions.map((suggestion) => ({
 }));
 
 export default () => {
-  const [value, setValue] = useState([]);
+  const [fragment, setFragment] = useState([]);
   const [suggestions, setSuggestions] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const inputRef = useRef(null);
+  const [loading, setLoading] = useState(false);
+  const [checked, setChecked] = React.useState(false);
+  const [longitude, setLongitude] = React.useState([0]);
+  const [latitude, setLatitude] = React.useState([0]);
   const onChange = (input) => {
     if (!input) {
       return setSuggestions([]);
     }
     setLoading(true);
-    return getSuggestions(input).then((newSuggestions) => {
+    return getSuggestions(input, latitude[0], longitude[0]).then((newSuggestions) => {
       const formattedNewSuggestions = formatSuggestions(newSuggestions);
       setSuggestions(formattedNewSuggestions);
       setLoading(false);
     });
+  };
+  const toggleChecked = (checkedValue) => {
+    setChecked(checkedValue);
+    if (!checkedValue) {
+      setLongitude([0]);
+      setLatitude([0]);
+    }
   };
   const [css, theme] = useStyletron();
   const homeClass = css({
@@ -36,7 +51,7 @@ export default () => {
     margin: 'auto',
   });
   const h1Class = css({
-    ...theme.typography.DisplayLarge,
+    ...theme.typography.DisplayMedium,
     textShadow: theme.lighting.shadow700,
   });
   const selectParentClass = css({
@@ -50,15 +65,53 @@ export default () => {
         </h1>
       </div>
       <div className={selectParentClass}>
+        <Checkbox
+          checked={checked}
+          checkmarkType={STYLE_TYPE.toggle_round}
+          onChange={(e) => toggleChecked(e.target.checked)}
+          labelPlacement={LABEL_PLACEMENT.right}
+          overrides={{
+            Root: {
+              style: {
+                paddingBottom: '15px',
+              },
+            },
+            Toggle: {
+              style: ({ $checked, $theme }) => ({
+                backgroundColor: $checked ? $theme.colors.accent : $theme.colors.primaryA,
+              }),
+            },
+          }}
+        >
+          Search with coordinates
+        </Checkbox>
+        {!!checked && (
+          <>
+            <Slider
+            value={latitude}
+            onChange={({ value }) => value && setLatitude(value)}
+            min={-90}
+            max={90}
+            step={0.00001}
+          />
+            <Slider
+            value={longitude}
+            onChange={({ value }) => value && setLongitude(value)}
+            min={-180}
+            max={180}
+            step={0.00001}
+          />
+          </>
+        )}
         <Select
-          value={value}
+          value={fragment}
           options={suggestions}
-          loading={loading}
+          isLoading={loading}
           type={TYPE.search}
-          onChange={(params) => setValue(params.value)}
+          onChange={(params) => setFragment(params.value)}
           onInputChange={(e) => onChange(e.target.value)}
           placeholder="I'm looking for ..."
-          inputRef={inputRef}
+          onBlurResetsInput={false}
           overrides={{
             Root: {
               style: {
