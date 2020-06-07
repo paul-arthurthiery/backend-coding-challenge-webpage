@@ -4,6 +4,8 @@ import { Provider as StyletronProvider } from 'styletron-react';
 import { BaseProvider } from 'baseui';
 
 import theme from './theme';
+import './styles.css';
+
 const engine = new Styletron();
 
 export default () => (
