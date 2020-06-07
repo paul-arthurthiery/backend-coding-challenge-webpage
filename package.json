@@ -1,14 +1,21 @@
 {
-  "name": "test",
+  "name": "backend-coding-challenge-webpage",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
+    "axios": "^0.19.2",
+    "baseui": "^9.82.0",
+    "eslint-config-airbnb-base": "^14.1.0",
+    "eslint-plugin-baseui": "^9.82.0",
+    "lodash.debounce": "^4.0.8",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-scripts": "3.4.1"
+    "react-scripts": "3.4.1",
+    "styletron-engine-atomic": "^1.4.6",
+    "styletron-react": "^5.2.7"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -17,7 +24,47 @@
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
-    "extends": "react-app"
+    "extends": [
+      "react-app",
+      "airbnb-base"
+    ],
+    "plugins": [
+      "baseui"
+    ],
+    "settings": {
+      "import/resolver": {
+        "node": {
+          "extensions": [
+            ".js",
+            ".jsx",
+            ".ts",
+            ".tsx",
+            ".json"
+          ]
+        }
+      }
+    },
+    "rules": {
+      "baseui/deprecated-theme-api": "warn",
+      "baseui/deprecated-component-api": "warn",
+      "baseui/no-deep-imports": "warn",
+      "import/extensions": [
+        "error",
+        "ignorePackages",
+        {
+          "js": "never",
+          "jsx": "never"
+        }
+      ],
+      "react/jsx-indent": [
+        2,
+        2,
+        {
+          "checkAttributes": true,
+          "indentLogicalExpressions": true
+        }
+      ]
+    }
   },
   "browserslist": {
     "production": [
